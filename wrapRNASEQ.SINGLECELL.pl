@@ -28,7 +28,7 @@ use Benchmark;
 use Data::Dumper;
 use POSIX qw(strftime);
 
-my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/";
+my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/SEQ_pipelines/";
 my %status = ();
 my $n = 1;
 my @command=@ARGV;

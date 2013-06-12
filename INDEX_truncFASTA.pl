@@ -28,7 +28,7 @@ while ($line=<IN>)
  }
  elsif ($count == 2)
  {
-  if($line=~/^([ATCGN]{6})([ATCGN]{6})TTTTT/)
+  if($line=~/^([ATCGN]{6})([ATCGN]{6})TTTTTTTTTT/)
  {
   $header="$header;".$1.';'.$2;
   $line=substr($line,$start,$length);
