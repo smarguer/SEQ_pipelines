@@ -15,7 +15,7 @@ my %index;
 if (@ARGV != 1) {die "wrong number of files";}
 (my $in)=@ARGV;
 
-open (IN, $in.'_R1_50.fasta') or die 'could not find the input file';
+open (IN, $in.'_R1_50A5.fasta') or die 'could not find the input file';
 open (IN1, $in.'_R2.fasta') or die 'could not find the input file';
 
 while ($line=<IN>)

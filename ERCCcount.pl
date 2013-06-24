@@ -22,15 +22,29 @@ if (@ARGV != 1) {die "wrong number of files";}
 
 my $line;
 my $count=0;
+my $count1=0;
 my @holder;
 my @holder1;
+my @holder2;
+my @coord;
 my %count;
 my %rand;
+my %rand1;
+my %rand2;
+my %hit;
 my $out;
 my $out1;
 my $index;
 my $feature;
-my @index=("CGTGAT","ACATCG","GCCTAA","TGGTCA","CACTGT","ATTGGC","GATCTG","TCAAGT","CTGATC","AAGCTA","GTAGCC","TACAAG","Unmapped");
+my $barcode;
+my $hit;
+my $indexname;
+
+my @index=("CGTGAT","ACATCG","GCCTAA","TGGTCA","CACTGT","ATTGGC","GATCTG","TCAAGT","CTGATC","AAGCTA","GTAGCC","TACAAG","NA");
+#for my $j (@index)
+#{
+#print "$j\n";
+#}
 my @features=("ERCC-00130",
 "ERCC-00096",
 "ERCC-00074",
@@ -144,11 +158,21 @@ for $feature (@features)
 $feature=0;
 $index=0;
 
+my $nameroot=$in;
+$nameroot=~/([a-z|A-Z|\d|_]*)/;
+$nameroot=$1;
+print "$nameroot\n";
+
 ##
 open (IN, $in) or die 'could not find the input file';
-open (OUT1,'>', $in.".ERCCall") or die 'could not find the input file';
-open (OUT2,'>', $in.".ERCCuni") or die 'could not find the input file';
+open (OUT1,'>', $in.".ERCCall.test") or die 'could not find the input file';
+open (OUT2,'>', $in.".ERCCuni.test") or die 'could not find the input file';
+#open (OUT3,'>', $in.".ERCCuni.bed") or die 'could not find the input file';
 ##
+
+#
+print "reading mapping output\n";
+#
 
 while ($line=<IN>)
  {
@@ -157,6 +181,15 @@ while ($line=<IN>)
 ##
   @holder = split (/ /, $line);
   @holder1=split (';', $holder[1]);
+  @coord=($holder[6],$holder[7]);
+  @coord=sort {$a <=> $b} @coord;
+  
+  $barcode="$holder1[3];$holder1[4];$holder[5];".(($coord[0]-$holder[2])+$holder[3]).";$holder[8]";
+  #$barcode="$holder1[3]$holder1[4]$holder[5]";
+  #$hit="$holder[5]$holder[6]";
+
+#print "$barcode\n";
+
   if(grep /$holder1[4]/, @index)
   {
    $index=$holder1[4];
@@ -181,15 +214,60 @@ while ($line=<IN>)
 ##
 
   $count{$feature}{$index}{ALL}++;
-  unless($rand{$index}{$holder1[3]})
+
+#############
+
+  unless($rand{$barcode})
   {
    $count{$feature}{$index}{UNI}++;
-   $rand{$index}{$holder1[3]}=1;
-  }    
- }
-print OUT1 "index1-CGTGAT\tindex2-ACATCG\tindex3-GCCTAA\tindex4-TGGTCA\tindex5-CACTGT\tindex6-ATTGGC\tindex7-GATCTG\tindex8-TCAAGT\tindex9-CTGATC\tindex10-AAGCTA\tindex11-GTAGCC\tindex12-TACAAG\tUnmapped\n";
+   $rand{$barcode}="$line\n";
+   $rand1{$barcode}=1;
+   $rand2{$barcode}="$line\n";
+  }
+  else
+  {
+   $rand{$barcode}.="$line\n";
+   $rand1{$barcode}++;
+  }
+}
+print "printing bed files\n";
 
-print OUT2 "index1-CGTGAT\tindex2-ACATCG\tindex3-GCCTAA\tindex4-TGGTCA\tindex5-CACTGT\tindex6-ATTGGC\tindex7-GATCTG\tindex8-TCAAGT\tindex9-CTGATC\tindex10-AAGCTA\tindex11-GTAGCC\tindex12-TACAAG\tUnmapped\n";
+for my $i (@index)
+{
+ $count1++;
+ print "$i\n";
+ if($i eq "NA")
+ {
+  $indexname="NOindex";
+ }
+ else
+ {
+  $indexname="index".$count1;
+ }
+ 
+ open (OUT3,'>', $nameroot.'.'.$indexname.'.5mis.ALLchr.col.bed') or die 'could not find the input file';
+ open (OUT4,'>', $nameroot.'.'.$indexname.'.5mis.ALLchr.col') or die 'could not find the input file';
+
+ for my $out3 (keys %rand)
+ {
+  @holder2=split(/;/,$out3);
+  $holder2[2]=~/CH([123456]{1})_bases/;
+  if($holder2[1] eq $i)
+  {
+   print OUT3 "chr".$1."\t".($holder2[3]-50)."\t".$holder2[3]."\t$out3\t$rand1{$out3}\t$holder2[4]\n";
+   print OUT4 "$rand2{$out3}";
+   delete $rand{$out3};
+  }
+ }
+ close OUT3;
+ close OUT4;
+}
+
+print "printing stats\n";
+
+print OUT1 "index1-CGTGAT\tindex2-ACATCG\tindex3-GCCTAA\tindex4-TGGTCA\tindex5-CACTGT\tindex6-ATTGGC\tindex7-GATCTG\tindex8-TCAAGT\tindex9-CTGATC\tindex10-AAGCTA\tindex11-GTAGCC\tindex12-TACAAG\tNOindex\n";
+
+print OUT2 "index1-CGTGAT\tindex2-ACATCG\tindex3-GCCTAA\tindex4-TGGTCA\tindex5-CACTGT\tindex6-ATTGGC\tindex7-GATCTG\tindex8-TCAAGT\tindex9-CTGATC\tindex10-AAGCTA\tindex11-GTAGCC\tindex12-TACAAG\tNOindex\n";
 
 for $out (@features)
  {
@@ -204,4 +282,6 @@ for $out (@features)
   print OUT2 "\n";
  }
 close IN;
+close OUT1;
+close OUT2;
 

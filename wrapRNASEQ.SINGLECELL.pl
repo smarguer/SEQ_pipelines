@@ -406,8 +406,12 @@ if ($options =~ /R/)
  $status{$n}=system "perl ".$scriptp."mapREADS.IV.pl ".$fastq.'.5mis.ALLchr.col '.$gffp.$gff;
  die "Problem stage $n" if $status{$n}; $n++;
  #perl ~/POMBE_SEQ/analysis/SCRIPTS/mapREADS.V.pl N0510_1.5mis.ALLtrs.GEN gff_090511.txt
- $status{$n}=system "perl ".$scriptp."mapREADS.V.pl ".$fastq.'.5mis.ALLtrs.GEN.col '.$gffp.$gff;
- die "Problem stage $n" if $status{$n}; $n++;
+######HASH OUT TRS BIT FOR SC####################################################################
+ unless($options =~ /sc/)
+ {
+  $status{$n}=system "perl ".$scriptp."mapREADS.V.pl ".$fastq.'.5mis.ALLtrs.GEN.col '.$gffp.$gff;
+  die "Problem stage $n" if $status{$n}; $n++;
+ }
  }
  unless ($options =~ /m/)
  {
@@ -430,26 +434,35 @@ if ($options =~ /R/)
  
  ##use total number of reads after collapse for NORM file creation##
  $depth_test=`ls -l *5mis.ALLchr.col | wc -l`;
- if ($depth_test == 1)
+ if($options =~ /sc/)
  {
- $chr_depth=`wc -l $fastq.5mis.ALLchr.col`;
- $chr_depth=~ /(\d{1,15})/;
- $chr_depth=$1;
- $trs_depth=`wc -l $fastq.5mis.ALLtrs.GEN.col`;
- $trs_depth=~ /(\d{1,15})/;
- $trs_depth=$1;
+  $chr_depth=`wc -l $fastq.5mis.ALLchr.col`;
+  $chr_depth=~ /(\d{1,15})/;
+  $chr_depth=$1;
+  $depth=($chr_depth) / 1000000;
  }
  else
  {
- $chr_depth=`wc -l $fastq*.5mis.ALLchr.col`;
- $chr_depth=~ /(\d{1,15})\stotal/;
- $chr_depth=$1;
- $trs_depth=`wc -l $fastq*.5mis.ALLtrs.GEN.col`;
- $trs_depth=~ /(\d{1,15})\stotal/;
- $trs_depth=$1;
+  if ($depth_test == 1)
+  {
+  $chr_depth=`wc -l $fastq.5mis.ALLchr.col`;
+  $chr_depth=~ /(\d{1,15})/;
+  $chr_depth=$1;
+  $trs_depth=`wc -l $fastq.5mis.ALLtrs.GEN.col`;
+  $trs_depth=~ /(\d{1,15})/;
+  $trs_depth=$1;
+  }
+  else
+  {
+  $chr_depth=`wc -l $fastq*.5mis.ALLchr.col`;
+  $chr_depth=~ /(\d{1,15})\stotal/;
+  $chr_depth=$1;
+  $trs_depth=`wc -l $fastq*.5mis.ALLtrs.GEN.col`;
+  $trs_depth=~ /(\d{1,15})\stotal/;
+  $trs_depth=$1;
+  }
+  $depth=($chr_depth + $trs_depth) / 1000000;
  }
- $depth=($chr_depth + $trs_depth) / 1000000;
- 
  #print "$chr_depth\n$trs_depth\n$depth\n";
 
  open (OUT, ">", "RPKM_".$fastq.'.r') or die 'could not open RPKM R file';
