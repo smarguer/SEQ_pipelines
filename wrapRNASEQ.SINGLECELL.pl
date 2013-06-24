@@ -28,8 +28,12 @@ use Benchmark;
 use Data::Dumper;
 use POSIX qw(strftime);
 
+<<<<<<< HEAD
 #my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/";
 my $scriptp="/jurg/group/SAM_RNA-SEQ_PIPELINE/SCRIPTS/";
+=======
+my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/SEQ_pipelines/";
+>>>>>>> 2b5f1ec794c8b158eadf5de448c55d5efaa080e1
 my %status = ();
 my $n = 1;
 my @command=@ARGV;
