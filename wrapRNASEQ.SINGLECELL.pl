@@ -28,7 +28,8 @@ use Benchmark;
 use Data::Dumper;
 use POSIX qw(strftime);
 
-my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/";
+#my $scriptp="/jurg/homedir/samuel/POMBE_SEQ/analysis/SCRIPTS/";
+my $scriptp="/jurg/group/SAM_RNA-SEQ_PIPELINE/SCRIPTS/";
 my %status = ();
 my $n = 1;
 my @command=@ARGV;
@@ -47,7 +48,7 @@ my $use = "\nUse:\n-o: options (default PCTVRS, see readme.txt)\n-gp: gff path (
 ##-o
 my $options="PCTVRS";
 ##-gp
-my $gffp = "/jurg/homedir/samuel/POMBE_SEQ/analysis/";
+my $gffp = "/jurg/group/SAM_RNA-SEQ_PIPELINE/ANNOT/";
 ##-qp
 my $fastqp = "./";
 ##-q

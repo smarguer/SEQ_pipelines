@@ -15,7 +15,7 @@
                 mv x$count x$count.fasta
 #oowriter x$count.fasta &
 #oowriter &
-                exonerate --query x$count.fasta --target ~/POMBE_SEQ/analysis/ALL_TRS_160511.fsa --model ungapped --showalignment FALSE --bestn 1 > x$count.ALLtrs &
+                exonerate --query x$count.fasta --target /jurg/group/SAM_RNA-SEQ_PIPELINE/GENOMES/ALL_TRS_160511.fsa --model ungapped --showalignment FALSE --bestn 1 > x$count.ALLtrs &
 #echo "$i"
 PID[$i]=$!
 done

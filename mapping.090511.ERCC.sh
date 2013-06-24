@@ -15,7 +15,7 @@
                 mv x$count x$count.fasta
 #oowriter x$count.fasta &
 #oowriter &
-                exonerate --query x$count.fasta --target ~/POMBE_SEQ/analysis/ALLchromosomes.090511.ERCC.fsa --model ungapped --showalignment FALSE --bestn 1 > x$count.ALLchr &
+                exonerate --query x$count.fasta --target /jurg/group/SAM_RNA-SEQ_PIPELINE/GENOMES/ALLchromosomes.090511.ERCC.fsa --model ungapped --showalignment FALSE --bestn 1 > x$count.ALLchr &
 #echo "$i"
 PID[$i]=$!
 done
